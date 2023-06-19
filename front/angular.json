@@ -76,19 +76,24 @@
                   "maximumError": "5mb"
                 }
               ]
-            }
-          }
+            },
+            "development": {}
+          },
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "the-hottest-reviews:build"
           },
           "configurations": {
             "production": {
               "browserTarget": "the-hottest-reviews:build:production"
+            },
+            "development": {
+              "browserTarget": "the-hottest-reviews:build:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -136,14 +141,17 @@
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
-            "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "the-hottest-reviews:serve"
+            "protractorConfig": "e2e/protractor.conf.js"
           },
           "configurations": {
             "production": {
               "devServerTarget": "the-hottest-reviews:serve:production"
+            },
+            "development": {
+              "devServerTarget": "the-hottest-reviews:serve:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
