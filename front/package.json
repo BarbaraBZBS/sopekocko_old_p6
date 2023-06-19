@@ -27,9 +27,10 @@
     "rxjs": "~6.6.7",
     "tar": "^6.1.15",
     "webpack-5": "^0.0.0",
-    "zone.js": "~0.11.8"
+    "zone.js": "^0.13.1"
   },
   "devDependencies": {
+    "@angular-devkit/build-angular": "^16.1.0",
     "@angular/cli": "^15.2.8",
     "@angular/compiler-cli": "^15.2.9",
     "@angular/language-service": "^15.2.9",
@@ -46,7 +47,7 @@
     "karma-jasmine-html-reporter": "^1.7.0",
     "ts-node": "~7.0.0",
     "tslint": "~6.1.0",
-    "typescript": "4.8"
+    "typescript": "^4.9.3"
   },
   "resolutions": {
     "webpack": "^5.0.0"
