@@ -3,106 +3,112 @@ import { Sauce } from '../models/Sauce.model';
 import { SaucesService } from '../services/sauces.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { Observable, map, switchMap, tap, take, of, catchError, EMPTY } from 'rxjs';
 
 @Component({
-  selector: 'app-single-sauce',
-  templateUrl: './single-sauce.component.html',
-  styleUrls: ['./single-sauce.component.scss']
+    selector: 'app-single-sauce',
+    templateUrl: './single-sauce.component.html',
+    styleUrls: ['./single-sauce.component.scss']
 })
 export class SingleSauceComponent implements OnInit {
 
-  loading: boolean;
-  sauce: Sauce;
-  userId: string;
-  likePending: boolean;
-  liked: boolean;
-  disliked: boolean;
-  errorMessage: string;
+    loading!: boolean;
+    sauce$!: Observable<Sauce>;
+    userId!: string;
+    likePending!: boolean;
+    liked!: boolean;
+    disliked!: boolean;
+    errorMessage!: string;
 
-  constructor(private sauces: SaucesService,
-              private route: ActivatedRoute,
-              private auth: AuthService,
-              private router: Router) { }
+    constructor(private sauces: SaucesService,
+        private route: ActivatedRoute,
+        private auth: AuthService,
+        private router: Router) { }
 
-  ngOnInit() {
-    this.userId = this.auth.getUserId();
-    this.loading = true;
-    this.route.params.subscribe(
-      (params) => {
-        this.sauces.getSauceById(params.id).then(
-          (sauce: Sauce) => {
-            this.sauce = sauce;
-            this.loading = false;
-            if (sauce.usersLiked.find(user => user === this.userId)) {
-              this.liked = true;
-            } else if (sauce.usersDisliked.find(user => user === this.userId)) {
-              this.disliked = true;
-            }
-          }
-        );
-      }
-    );
-    this.userId = this.auth.getUserId();
-  }
+    ngOnInit() {
+        this.userId = this.auth.getUserId();
+        this.loading = true;
+        this.userId = this.auth.getUserId();
+        this.sauce$ = this.route.params.pipe(
+            map(params => params['id']),
+            switchMap(id => this.sauces.getSauceById(id)),
+            tap(sauce => {
+                this.loading = false;
+                if (sauce.usersLiked.find(user => user === this.userId)) {
+                    this.liked = true;
+                }
+                else if (sauce.usersDisliked.find(user => user === this.userId)) {
+                    this.disliked = true;
+                }
 
-  onLike() {
-    if (this.disliked) {
-      return 0;
+            })
+        )
     }
-    this.likePending = true;
-    this.sauces.likeSauce(this.sauce._id, !this.liked).then(
-      (liked: boolean) => {
-        this.likePending = false;
-        this.liked = liked;
-        if (liked) {
-          this.sauce.likes++;
-        } else {
-          this.sauce.likes--;
-        }
-      }
-    );
-  }
 
-  onDislike() {
-    if (this.liked) {
-      return 0;
+    onLike() {
+        if (this.disliked) {
+            return;
+        }
+        this.likePending = true;
+        this.sauce$.pipe(
+            take(1),
+            switchMap((sauce: Sauce) => this.sauces.likeSauce(sauce._id, !this.liked).pipe(
+                tap(liked => {
+                    this.likePending = false;
+                    this.liked = liked;
+                }),
+                map(liked => ({ ...sauce, likes: liked ? sauce.likes + 1 : sauce.likes - 1 })),
+                tap(sauce => this.sauce$ = of(sauce))
+            )),
+        ).subscribe();
     }
-    this.likePending = true;
-    this.sauces.dislikeSauce(this.sauce._id, !this.disliked).then(
-      (disliked: boolean) => {
-        this.likePending = false;
-        this.disliked = disliked;
-        if (disliked) {
-          this.sauce.dislikes++;
-        } else {
-          this.sauce.dislikes--;
+
+    onDislike() {
+        if (this.liked) {
+            return;
         }
-      }
-    );
-  }
+        this.likePending = true;
+        this.sauce$.pipe(
+            take(1),
+            switchMap((sauce: Sauce) => this.sauces.dislikeSauce(sauce._id, !this.disliked).pipe(
+                tap(disliked => {
+                    this.likePending = false;
+                    this.disliked = disliked;
+                }),
+                map(disliked => ({ ...sauce, dislikes: disliked ? sauce.dislikes + 1 : sauce.likes - 1 })),
+                tap(sauce => this.sauce$ = of(sauce))
+            )),
+        ).subscribe();
+    }
 
-  onBack() {
-    this.router.navigate(['/sauces']);
-  }
-
-  onModify() {
-    this.router.navigate(['/modify-sauce', this.sauce._id]);
-  }
-
-  onDelete() {
-    this.loading = true;
-    this.sauces.deleteSauce(this.sauce._id).then(
-      (response: { message: string }) => {
-        console.log(response.message);
-        this.loading = false;
+    onBack() {
         this.router.navigate(['/sauces']);
-      }
-    ).catch(
-      (error) => {
-        this.loading = false;
-        this.errorMessage = error.message;
-        console.error(error);
-      }
-    );
-  }
+    }
+
+    onModify() {
+        this.sauce$.pipe(
+            take(1),
+            tap(sauce => this.router.navigate(['/modify-sauce', sauce._id]))
+
+        ).subscribe()
+    }
+
+    onDelete() {
+        this.loading = true;
+        this.sauce$.pipe(
+            take(1),
+            switchMap(sauce => this.sauces.deleteSauce(sauce._id)),
+            tap(message => {
+                console.log(message);
+                this.loading = false;
+                this.router.navigate(['/sauces']);
+            }),
+            catchError(error => {
+                this.loading = false;
+                this.errorMessage = error.message;
+                console.error(error);
+                return EMPTY;
+            })
+        ).subscribe();
+    }
 }
