@@ -16,7 +16,7 @@ export class AuthService {
         private router: Router) { }
 
     createUser(email: string, password: string) {
-        return this.http.post<{ message: string }>('http://localhost:3000/api/auth/signup)', { email: email, password: password });
+        return this.http.post<{ message: string }>('http://localhost:3000/api/auth/signup', { email: email, password: password });
     }
 
     getToken() {
