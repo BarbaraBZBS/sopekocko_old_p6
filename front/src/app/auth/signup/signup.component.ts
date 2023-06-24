@@ -28,8 +28,8 @@ export class SignupComponent implements OnInit {
 
     onSignup() {
         this.loading = true;
-        const email = this.signupForm.get('email').value;
-        const password = this.signupForm.get('password').value;
+        const email = this.signupForm.get('email')!.value;
+        const password = this.signupForm.get('password')!.value;
         this.auth.createUser(email, password).pipe(
             switchMap(() => this.auth.loginUser(email, password)),
             tap(() => {
