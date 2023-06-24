@@ -3,7 +3,8 @@ const mongoose = require( 'mongoose' );
 const app = express();
 const saucesRoutes = require( './routes/sauces' );
 const userRoutes = require( './routes/user' );
-const cors = require( 'cors' )
+const cors = require( 'cors' );
+const path = require( 'path' );
 
 mongoose.connect( 'mongodb+srv://bun:hoTsauCe@sopekocko.otmpw7w.mongodb.net/?retryWrites=true&w=majority',
     {
@@ -26,6 +27,8 @@ app.use( cors() );
 //     res.setHeader( 'Access-Control-Allow -Credentials', 'true' );
 //     next();
 // } );
+
+app.use( '/images', express.static( path.join( __dirname, 'images' ) ) );
 app.use( '/api/sauces', saucesRoutes );
 app.use( '/api/auth', userRoutes );
 module.exports = app;
