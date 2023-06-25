@@ -77,60 +77,26 @@ exports.likeDislikeSauce = ( req, res, next ) => {
                 if ( !sauce.usersLiked.includes( req.body.userId ) ) {
                     sauce.likes++;
                     sauce.usersLiked.push( req.body.userId );
-                    // sauce.save()
-                    //     .then( () => res.status( 200 ).json( { message: 'sauce liked' } ) )
-                    //     .catch( error => res.status( 400 ).json( { error } ) );
                 }
             }
             else if ( req.body.like == 0 ) {
                 if ( sauce.usersLiked.includes( req.body.userId ) ) {
                     sauce.likes--;
                     sauce.usersLiked.splice( sauce.usersLiked.indexOf( req.body.userId ) );
-                    // sauce.save()
-                    //     .then( () => res.status( 200 ).json( { message: 'sauce like removed' } ) )
-                    //     .catch( error => res.status( 400 ).json( { error } ) )
                 }
                 else if ( sauce.usersDisliked.includes( req.body.userId ) ) {
                     sauce.dislikes--;
                     sauce.usersDisliked.splice( sauce.usersDisliked.indexOf( req.body.userId ) );
-                    // sauce.save()
-                    //     .then( () => res.status( 200 ).json( { message: 'sauce dislike removed' } ) )
-                    //     .catch( error => res.status( 400 ).json( { error } ) )
                 }
             }
             else if ( req.body.like == -1 ) {
                 if ( !sauce.usersDisliked.includes( req.body.userId ) ) {
                     sauce.dislikes++;
                     sauce.usersDisliked.push( req.body.userId );
-                    // sauce.save()
-                    //     .then( () => res.status( 200 ).json( { message: 'sauce disliked' } ) )
-                    //     .catch( error => res.status( 400 ).json( { error } ) )
                 }
             }
             sauce.save()
             res.status( 200 ).json( { message: "Sauce like/dislike updated" } )
-
-
-            // if (sauce.usersLiked.includes(req.auth.userId)) {
-            //     console.log("liked?: ", sauce.usersLiked)
-            //     console.log("already liked ! disliking")
-            //     // newLike = sauce.likes - 1
-            //     sauce.usersLiked.remove(req.auth.userId)
-            //     Sauce.updateOne({id_: req.params.id}, {likes: 0})
-            //     .then(()=>res.status(200).json({message: 'likes updated'}))
-            //     .catch(error => res.status(400).json({error}))
-            //     // const newArray = sauce.usersLiked.filter(ele=> {ele == req.auth.userId})
-            //     // sauce.usersLiked = newArray
-            // } else if(sauce.usersDisliked.includes(req.auth.userId)){
-            //     console.log("disliked?: ", sauce.usersDisliked)
-            //     console.log("liking !")
-            //     sauce.likes + 1
-            //     sauce.usersLiked.remove(req.auth.userId)
-            //     Sauce.updateOne({id_: req.params.id}, {likes: - 1})
-            //     .then(()=>res.status(200).json({message: 'likes updated'}))
-            //     .catch(error => res.status(400).json({error}))
-
-            // }
         } )
         .catch( error => res.status( 400 ).json( { error } ) )
 };
