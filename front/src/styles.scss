@@ -1,14 +1,18 @@
 @import url('https://fonts.googleapis.com/css?family=Mali:700|Source+Sans+Pro');
+@import "bootstrap/scss/bootstrap.scss";
 
 body {
-  font-family: "Source Sans Pro", sans-serif ;
-  letter-spacing: 0.1em;
-  margin: 0;
-  white-space: pre-line;
+    font-family: "Source Sans Pro", sans-serif;
+    letter-spacing: 0.1em;
+    margin: 0;
+    white-space: pre-line;
 }
 
-html, body { height: 100%; }
+html,
+body {
+    height: 100%;
+}
 
 mat-spinner {
-  margin: auto;
+    margin: auto;
 }

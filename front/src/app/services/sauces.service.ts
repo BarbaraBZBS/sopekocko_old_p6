@@ -112,8 +112,8 @@ export class SaucesService {
     }
 
     dislikeSauce(id: string, dislike: boolean) {
-        return this.http.post<{ message: string }>('http://localhost:3000/api/sauces/' + id + '/dislike',
-            { userId: this.auth.getUserId(), dislike: dislike ? -1 : 0 }
+        return this.http.post<{ message: string }>('http://localhost:3000/api/sauces/' + id + '/like',
+            { userId: this.auth.getUserId(), like: dislike ? -1 : 0 }
         ).pipe(
             map(() => dislike),
             catchError(error => throwError(() => { new Error(error.error.message) }))
