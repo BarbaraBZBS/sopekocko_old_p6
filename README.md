@@ -1,7 +1,7 @@
 ##SO PEKOCKO##
 
-**this is a project formerly created with Angular/http 7, it has been updated for Angular 16 and some deprecated packages have been removed**
-**and issues might occur. Make sure to install all necessary packages and the app should run fine**
+**this is a project formerly created with Angular/http 7. It has been updated for Angular 16, some deprecated packages have been removed.**
+**That is why issues might occur. Make sure to install all necessary packages and the app should run fine**
 
 
 For the back end of this MVP :
